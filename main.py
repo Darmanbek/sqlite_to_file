@@ -2,32 +2,10 @@ import flet as ft
 from sql_query import *
 from pages import ( add_table_data_page, add_table_page, home_page, table_page )
 
-# create_table(
-#     table_name="user",
-#     table_values={
-#         "first name": "TEXT NOT NULL",
-#         "last name": "TEXT NOT NULL",
-#         "age": "INTEGER NOT NULL"
-#     }
-# )
-
-
-
 
 db_file = "database.db"
 db = create_connection(db_file)
 
-# update = update_table(
-#     db=db,
-#     table_name="user",
-#     table_values={
-#         "'first name'": "'Bekzad2'",
-#         "'last name'": "'Aydingaliev2'",
-#         "'age'": "20"
-#     }
-# )
-
-# print(update)
 
 tables, table_headers = show_table(db=db, table_name="user")
 
@@ -37,14 +15,13 @@ database_tables, tables_data_count = show_tables(db)
 
 def main(page: ft.Page):
     page.title = "SQLite to file"
-    page.window_width = 1000
-    page.window_height = 600
     page.theme_mode = ft.ThemeMode.LIGHT
     page.window_center()
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    
 
+    
+    
     def route_change(route):
         troute = ft.TemplateRoute(page.route)
         page.views.clear()
@@ -94,6 +71,6 @@ def main(page: ft.Page):
     page.go(page.route)
 
 
-ft.app(target=main, port=4000)
+ft.app(main)
 
 db.close()

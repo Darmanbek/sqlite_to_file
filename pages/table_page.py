@@ -3,7 +3,7 @@ import flet as ft
 def table(page: ft.Page, tables: list, table_headers: list, name_id: str):
     
     return [
-        ft.AppBar(title=ft.Text("База данных SQLite"), bgcolor=ft.colors.SURFACE_VARIANT),
+        ft.AppBar(title=ft.Text("База данных SQLite"), bgcolor=ft.colors.SURFACE_VARIANT, ),
         ft.DataTable(
             columns=[
                 ft.DataColumn(

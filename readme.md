@@ -1,12 +1,9 @@
-# SQLite database to File:
+# A sqlite-to-file Flet app
 
-- CSV
-- Excel
-- PDF
-- Doc
-- ...
+An example of a minimal Flet app.
 
-# Modules:
+To run the app:
 
-- sqlite3
-- flet
+```
+flet run [app_directory]
+```
