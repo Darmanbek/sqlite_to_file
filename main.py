@@ -7,11 +7,6 @@ db_file = "database.db"
 db = create_connection(db_file)
 
 
-tables, table_headers = show_table(db=db, table_name="user")
-
-database_tables, tables_data_count = show_tables(db)
-
-
 
 def main(page: ft.Page):
     page.title = "SQLite to file"
@@ -28,18 +23,17 @@ def main(page: ft.Page):
         page.views.append(
             ft.View(
                 "/",
-                home_page.home(page, database_tables, tables_data_count),
+                home_page.home(page, db),
             )
         )
         if troute.match("/table/:name_id"):
             name_id = troute.name_id
             page.go(f"/table/{name_id}")
-            tables, table_headers = show_table(db=db, table_name=name_id)
             if page.route == f"/table/{name_id}":
                 page.views.append(
                     ft.View(
                         f"/table/{name_id}",
-                        table_page.table(page, tables, table_headers, name_id),
+                        table_page.table(page, db, name_id),
                     )
                 )
         if troute.match("/table/:name_id/add-table-data"):
@@ -48,7 +42,7 @@ def main(page: ft.Page):
                 page.views.append(
                     ft.View(
                         f"/table/{name_id}/add-table-data",
-                        add_table_data_page.add_table_data(page, tables, table_headers),
+                        add_table_data_page.add_table_data(page, db, name_id),
                     )
                 )
         if page.route == "/add-table":

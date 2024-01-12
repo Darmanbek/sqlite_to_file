@@ -1,19 +1,29 @@
 import flet as ft
+from sql_query import *
+import sqlite3 as sql
 
 
-
-def add_table_data(page: ft.Page, tables: list, table_headers: list):
-        
+def add_table_data(page: ft.Page, db: sql.Connection, name_id: str):
+    tables, table_headers = show_table(db=db, table_name=name_id)
+    
+    def add_new_datarows():
+        pass
+    
+    def check_column_type(item):
+        if type(item) is int:
+            return ft.KeyboardType.NUMBER
+        return ft.KeyboardType.TEXT
+    
     def change_add_data_count(e):
         add_data_table_ref.current.rows.append(
             ft.DataRow(
                 cells=[
                     ft.DataCell(ft.TextField(
                         height=50,
-                        keyboard_type=ft.KeyboardType.NUMBER if item.isdigit() else ft.KeyboardType.TEXT)
-                    ) for item in data
+                        keyboard_type=check_column_type(item))
+                    ) for item in tables[0]
                 ],
-            ) for data in tables[0]
+            )
         )
         add_data_table_ref.current.update()
 
@@ -43,10 +53,10 @@ def add_table_data(page: ft.Page, tables: list, table_headers: list):
                         cells=[
                             ft.DataCell(ft.TextField(
                                 height=50,
-                                keyboard_type=ft.KeyboardType.NUMBER if item.isdigit() else ft.KeyboardType.TEXT)
-                            ) for item in data
+                                keyboard_type=check_column_type(item))
+                            ) for item in tables[0]
                         ],
-                    ) for data in tables[0]
+                    )
                 ],
             ),
             ]),

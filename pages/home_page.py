@@ -1,10 +1,15 @@
 import flet as ft
+import sqlite3 as sql
+from sql_query import *
 import csv
 
 
-def home(page: ft.Page, database_tables: list, tables_data_count: list):
+def home(page: ft.Page, db: sql.Connection):
+    database_tables, tables_data_count = show_tables(db)
+    
     local_database_tables = [table[0] for table in database_tables]
     local_tables_data_count = [count[0] for count in tables_data_count]
+    tables, table_headers = None, None
     
     def save_to_file(tname):
         file_picker_dialog.save_file(
@@ -12,19 +17,19 @@ def home(page: ft.Page, database_tables: list, tables_data_count: list):
             allowed_extensions=["csv", "xlsx", "pdf", "docx"],
             file_type=ft.FilePickerFileType.CUSTOM
         )
+        nonlocal tables
+        nonlocal table_headers
+        tables, table_headers = show_table(db=db, table_name=tname)
     
     def save_file_result(e: ft.FilePickerResultEvent):
         save_path = e.path
         if save_path:
             try:
                 with open(save_path, "w", encoding="utf-8") as file:
-                    writer = csv.writer(file, delimiter=' ',
-                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                    writer.writerow(['Spam'] * 5 + ['Baked Beans'])
-                    writer.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])
-                    writer.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])
-                    writer.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])
-                    writer.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])
+                    writer = csv.writer(file, delimiter=';', lineterminator='\n')
+                    writer.writerow(table_headers)
+                    for row in tables: 
+                        writer.writerow(row)
             except Exception as error:
                 print(error)
     
