@@ -49,7 +49,7 @@ def main(page: ft.Page):
             page.views.append(
                 ft.View(
                     "/add-table",
-                    add_table_page.add_table(page),
+                    add_table_page.add_table(page, db),
                 )
             )
         page.update()

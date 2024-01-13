@@ -9,34 +9,11 @@ def home(page: ft.Page, db: sql.Connection):
     
     local_database_tables = [table[0] for table in database_tables]
     local_tables_data_count = [count[0] for count in tables_data_count]
-    tables, table_headers = None, None
     
-    def save_to_file(tname):
-        file_picker_dialog.save_file(
-            file_name=tname.capitalize(),
-            allowed_extensions=["csv", "xlsx", "pdf", "docx"],
-            file_type=ft.FilePickerFileType.CUSTOM
-        )
-        nonlocal tables
-        nonlocal table_headers
-        tables, table_headers = show_table(db=db, table_name=tname)
-    
-    def save_file_result(e: ft.FilePickerResultEvent):
-        save_path = e.path
-        if save_path:
-            try:
-                with open(save_path, "w", encoding="utf-8") as file:
-                    writer = csv.writer(file, delimiter=';', lineterminator='\n')
-                    writer.writerow(table_headers)
-                    for row in tables: 
-                        writer.writerow(row)
-            except Exception as error:
-                print(error)
-    
-    file_picker_dialog = ft.FilePicker(on_result=save_file_result)
-    
-    page.overlay.append(file_picker_dialog)
-    page.update()
+    def delete_selected_table(tname):
+        delete_table(db, tname)
+        
+        page.update()
     
     return [
         ft.AppBar(title=ft.Text("База данных SQLite"), bgcolor=ft.colors.SURFACE_VARIANT),
@@ -54,10 +31,9 @@ def home(page: ft.Page, db: sql.Connection):
                         ),
                         ft.Row(
                             [
-                                ft.TextButton("Сохранить", on_click=lambda _, tname=table: save_to_file(tname)),
                                 ft.TextButton("Показать", on_click=lambda _, tname=table: page.go(f"/table/{tname}")), 
-                                ft.TextButton("Удалить")
-                                ],
+                                ft.TextButton("Удалить", on_click=lambda _, tname=table: delete_selected_table(tname))
+                            ],
                             alignment=ft.MainAxisAlignment.END,
                         ),
                     ],

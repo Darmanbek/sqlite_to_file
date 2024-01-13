@@ -60,11 +60,11 @@ def show_table(db: sql.Connection, table_name: str):
     cursor.execute(sql_query)
     
     response = cursor.fetchall()
-    if not len(response):
-        return None
-    data = []
-    
     headers = list(map(lambda x: x[0], cursor.description))
+    data = []
+    if not len(response):
+        return data, headers
+    
     for res in response:
         data.append(res)
     return data, headers
@@ -73,7 +73,7 @@ def update_table(db: sql.Connection, table_name: str, table_values: dict):
     cursor = db.cursor()
     
     table_columns =  ", ".join(table_values.keys())
-    table_columns_values = ", ".join(["?" for i in table_values.values()])
+    table_columns_values = ", ".join(["?" for _ in table_values.values()])
     cursor.execute(f"""
         INSERT INTO {table_name} ({table_columns}) VALUES ({table_columns_values})
     """, tuple(table_values.values()))
@@ -83,4 +83,14 @@ def update_table(db: sql.Connection, table_name: str, table_values: dict):
     return cursor.lastrowid
 
 
-
+def delete_table(db: sql.Connection, table_name: str,):
+    cursor = db.cursor()
+    
+    cursor.execute(f"""
+        DROP TABLE IF EXISTS {table_name};
+    """)
+    
+    db.commit()
+    
+    return cursor.lastrowid
+    
